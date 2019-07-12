@@ -12,7 +12,7 @@
     "lint": "eslint '*/**/*.{ts,tsx}' ",
     "postinstall": "npm run compile",
     "test": "npm run lint && jest --verbose",
-    "compile": "tsc --build tsconfig.json"
+    "compile": "rm -rf dist && tsc --build tsconfig.json"
   },
   "lint-staged": {
     "*.ts": [
