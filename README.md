@@ -46,8 +46,8 @@ import { useGlobalCounter } from './hooks';
 export default function Counter({ name }) {
   const [state, dispatch] = useGlobalCounter();
 
-  const increment = useCallback(() => dispatch({ type: 'inc' }), [dispatch]);
-  const decrement = useCallback(() => dispatch({ type: 'dec' }), [dispatch]);
+  const increment = useCallback(() => dispatch({ type: 'inc' }));
+  const decrement = useCallback(() => dispatch({ type: 'dec' }));
 
   return (
     <div>
@@ -58,6 +58,37 @@ export default function Counter({ name }) {
     </div>
   );
 }
+```
+
+## Or create the actions
+
+```js
+
+export const [CounterProvider, useGlobalCounter] = createGlobalReducer(
+  createReducer({
+    inc: x => x + 1,
+    dec: x => x - 1
+  }),
+  10,
+  dispatch => ({
+    increment: () => setTimeout(() => dispatch({ type: 'inc' }), 300),
+    decrement: () => dispatch({ type: 'dec' })
+  })
+);
+
+export default function Counter({ name }) {
+  const [state, , actions] = useGlobalCounter();
+
+  return (
+    <div>
+      <h2>{name}</h2>
+      {state}
+      <button onClick={actions.increment}>+</button>
+      <button onClick={actions.decrement}>-</button>
+    </div>
+  );
+}
+
 ```
 
 ## Contributing

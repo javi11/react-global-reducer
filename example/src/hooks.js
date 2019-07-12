@@ -6,7 +6,7 @@ export const [CounterProvider, useGlobalCounter] = createGlobalReducer(
     dec: x => x - 1
   }),
   10,
-  (dispatch, state) => ({
+  dispatch => ({
     increment: () => setTimeout(() => dispatch({ type: 'inc' }), 300),
     decrement: () => dispatch({ type: 'dec' })
   })
