@@ -1,4 +1,4 @@
-# React global reducer
+# React global reducer [![Build Status](https://travis-ci.org/javi11/react-global-reducer.svg?branch=master)](https://travis-ci.org/javi11/react-global-reducer)
 
 A React global state using the context and hooks API, without any dependencies.
 
