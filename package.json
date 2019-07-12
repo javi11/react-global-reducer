@@ -1,6 +1,6 @@
 {
   "name": "react-hooks-reducer",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A context state reducer with react hooks",
   "main": "./dist/index.jsx",
   "types": "./dist/index.d.ts",
