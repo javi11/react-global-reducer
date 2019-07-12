@@ -1,5 +1,5 @@
 {
-  "name": "react-context-reducer",
+  "name": "react-hooks-reducer",
   "version": "0.0.0",
   "description": "A context state reducer with react hooks",
   "main": "./dist/index.jsx",
@@ -67,5 +67,13 @@
   },
   "peerDependencies": {
     "react": "~16.8.0"
-  }
+  },
+  "keywords": [
+    "react",
+    "store",
+    "dispatch",
+    "context",
+    "hooks",
+    "reducer"
+  ]
 }
