@@ -9,8 +9,7 @@ describe('Global reducer', () => {
     const [CounterProvider, useGlobalCounter, actions] = createGlobalSlice({
       initialValue: 0,
       reducers: {
-        increment: s => s + 1,
-        decrement: s => s - 1
+        increment: (state, action) => state + action.payload
       }
     });
     const Counter = () => {
@@ -18,7 +17,7 @@ describe('Global reducer', () => {
       return (
         <div>
           <span>{state}</span>
-          <button type="button" onClick={() => dispatch(actions.increment())}>
+          <button type="button" onClick={() => dispatch(actions.increment(1))}>
             +1
           </button>
         </div>

@@ -7,23 +7,32 @@ A React global state using the context and hooks API, without any dependencies.
 ### Create global Provider and hook
 
 ```jsx
-function reducer(state, action) {
-  switch (action.type) {
-    case 'inc':
-      return state + 1;
-    case 'dec':
-      return state - 1;
-    default:
-      return state;
+import React from 'react';
+import { createGlobalSlice } from 'react-global-reducer';
+
+const [Provider, useCounter, actions] = createGlobalSlice({
+  initialValue: 0,
+  reducers: {
+    increment: s => s + 1,
+    decrement: s => s - 1,
+    sum: (state, action) => state + action.payload
   }
+});
+
+export const CounterProvider = Provider;
+
+export default function Counter() {
+  const [value, dispatch] = useCounter();
+
+  return (
+    <div>
+      {value}
+      <button onClick={() => dispatch(actions.increment())}>+</button>
+      <button onClick={() => dispatch(actions.decrement())}>-</button>
+      <button onClick={() => dispatch(actions.sum(5))}>+5</button>
+    </div>
+  );
 }
-
-const initialValue = 10;
-
-export const [CounterProvider, useGlobalCounter] = createGlobalReducer(
-  reducer,
-  initialValue
-);
 ```
 
 ### Using Provider
@@ -58,37 +67,6 @@ export default function Counter({ name }) {
     </div>
   );
 }
-```
-
-## Or create the actions
-
-```js
-
-export const [CounterProvider, useGlobalCounter] = createGlobalReducer(
-  createReducer({
-    inc: x => x + 1,
-    dec: x => x - 1
-  }),
-  10,
-  dispatch => ({
-    increment: () => setTimeout(() => dispatch({ type: 'inc' }), 300),
-    decrement: () => dispatch({ type: 'dec' })
-  })
-);
-
-export default function Counter({ name }) {
-  const [state, , actions] = useGlobalCounter();
-
-  return (
-    <div>
-      <h2>{name}</h2>
-      {state}
-      <button onClick={actions.increment}>+</button>
-      <button onClick={actions.decrement}>-</button>
-    </div>
-  );
-}
-
 ```
 
 ## Contributing
