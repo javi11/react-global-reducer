@@ -1,18 +1,18 @@
 {
   "name": "react-hooks-reducer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A context state reducer with react hooks",
-  "main": "./dist/index.jsx",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**/*"
   ],
   "scripts": {
     "release": "np",
-    "lint": "eslint '*/**/*.{ts,tsx}' ",
+    "lint": "eslint ./src/**/*.{ts,tsx}",
     "postinstall": "npm run compile",
     "test": "npm run lint && jest --verbose",
-    "compile": "rm -rf dist && tsc --build tsconfig.json"
+    "compile": "rimraf ./dist && tsc --build tsconfig.json"
   },
   "lint-staged": {
     "*.ts": [
@@ -39,12 +39,12 @@
   "homepage": "https://github.com/javi11/react-global-reducer#readme",
   "devDependencies": {
     "@testing-library/react": "8.0.4",
-    "@types/jest": "24.0.15",
+    "@types/jest": "24.9.0",
     "@types/react": "16.8.23",
     "@types/react-dom": "16.8.4",
     "@typescript-eslint/eslint-plugin": "1.11.0",
     "@typescript-eslint/parser": "1.11.0",
-    "eslint": "6.0.1",
+    "eslint": "6.6.0",
     "eslint-config-airbnb-typescript": "4.0.0",
     "eslint-config-prettier": "6.0.0",
     "eslint-config-react": "1.1.7",
@@ -52,9 +52,9 @@
     "eslint-plugin-jest": "22.7.2",
     "eslint-plugin-prettier": "3.1.0",
     "eslint-plugin-react": "7.14.2",
-    "jest": "24.8.0",
+    "jest": "24.9.0",
     "jest-config": "24.8.0",
-    "jest-extended": "0.11.1",
+    "jest-extended": "^0.11.5",
     "lint-staged": "9.1.0",
     "np": "5.0.3",
     "pre-commit": "1.2.2",
@@ -62,11 +62,12 @@
     "prettier-check": "2.0.0",
     "react": "16.8.6",
     "react-dom": "16.8.6",
+    "rimraf": "3.0.2",
     "ts-jest": "24.0.2",
     "typescript": "3.5.2"
   },
   "peerDependencies": {
-    "react": "~16.8.0"
+    "react": "^16.8.0"
   },
   "keywords": [
     "react",

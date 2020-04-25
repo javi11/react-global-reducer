@@ -1,89 +1,62 @@
-import {
-  createContext,
-  createElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { createContext, createElement, useContext, useReducer } from 'react';
 
 export interface Action {
-  type: string;
+  readonly type: string;
+  readonly payload?: any;
 }
-
-export type ReducerBuilder<S, A extends Action> = (state: S, action: A) => S;
-
-export interface Reducer<S, A extends Action> {
-  [Key: string]: ReducerBuilder<S, A>;
-}
-
 export type Dispatch<A extends Action> = (action: A) => void;
-
-export interface Actions<A extends Action> {
-  [Key: string]: (...args: any[]) => void;
-}
-
-export type ActionsFactory<S, A extends Action> = (dispatch: Dispatch<A>, state: S) => Actions<A>;
-
-export type Handler<S> = React.Dispatch<React.SetStateAction<S>>;
-
-export type GlobalReducerHook<S, A extends Action> = [S, Dispatch<A>, Actions<A>];
-
-export type GlobalReducer<S, A extends Action> = [
-  React.ComponentType,
-  () => GlobalReducerHook<S, A>
-];
+export type Reducer<S, A extends Action> = (state: S, action: A) => S;
+export type ReducerHook<S, A extends Action> = () => [S, Dispatch<A>];
 
 export function createGlobalReducer<S, A extends Action>(
-  reducer: ReducerBuilder<S, A>,
-  initialState: S,
-  actionsFactory?: ActionsFactory<S, A>
-): GlobalReducer<S, A> {
-  const Context = createContext(initialState);
-  const handlers: Handler<S>[] = [];
+  reducer: Reducer<S, A>,
+  initialState: S
+): [React.ComponentType, ReducerHook<S, A>] {
+  const Context = createContext<[S, Dispatch<A>]>([initialState, () => {}]);
 
-  function useGlobalReducer(): GlobalReducerHook<S, A> {
-    const state = useContext(Context);
-    const dispatch = useCallback(
-      action => {
-        const newState = reducer(state, action);
-        handlers.forEach(handler => handler(newState));
-      },
-      [state]
-    );
-
-    const actions = useMemo(() => {
-      if (typeof actionsFactory === 'function') {
-        return actionsFactory(dispatch, state);
-      }
-      return {};
-    }, [state, dispatch]);
-
-    return [state, dispatch, actions];
-  }
+  const useGlobalReducer = () => useContext(Context);
 
   const Provider: React.ComponentType = ({ children }) => {
-    const [value, setValue] = useState(initialState);
-    useEffect(() => {
-      handlers.push(setValue);
-      return () => {
-        const index = handlers.indexOf(setValue);
-        handlers.splice(index, 1);
-      };
-    }, [setValue]);
+    const value = useReducer(reducer, initialState);
     return createElement(Context.Provider, { value }, children);
   };
 
   return [Provider, useGlobalReducer];
 }
 
-export function createReducer<S, A extends Action>(map: Reducer<S, A> = {}): ReducerBuilder<S, A> {
+export interface ReducerBuilder<S, A extends Action> {
+  [type: string]: Reducer<S, A>;
+}
+
+export type Actions<R> = {
+  [P in keyof R]: (payload?: any) => Action;
+};
+
+export function mergeReducers<S, A extends Action>(builder: ReducerBuilder<S, A>): Reducer<S, A> {
   return function reducer(state, action) {
-    const handler = map[action.type];
-    if (typeof handler === 'function') {
-      return handler(state, action);
-    }
-    return state;
+    const handler = builder[action.type];
+    return handler(state, action);
   };
+}
+
+export function createActions<R extends ReducerBuilder<any, any>>(builder: R): Actions<R> {
+  return Object.keys(builder).reduce(
+    (actions, type) =>
+      Object.assign(actions, { [type]: (payload?: any): Action => ({ type, payload }) }),
+    {}
+  ) as Actions<R>;
+}
+
+export interface SliceConfig<S, A extends Action, R extends ReducerBuilder<S, A>> {
+  initialValue: S;
+  reducers: R;
+}
+
+export function createGlobalSlice<S, A extends Action, R extends ReducerBuilder<S, A>>(
+  config: SliceConfig<S, A, R>
+): [React.ComponentType, ReducerHook<S, A>, Actions<R>] {
+  const reducer = mergeReducers(config.reducers);
+  const actions = createActions(config.reducers);
+  const [Provider, useGlobalReducer] = createGlobalReducer(reducer, config.initialValue);
+  return [Provider, useGlobalReducer, actions];
 }

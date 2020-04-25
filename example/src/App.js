@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { CounterProvider, PersonProvider } from './hooks';
-import Counter from './Counter';
-import PersonForm from './PersonForm';
+import Counter, { CounterProvider } from './Counter';
+import PersonForm, { PersonProvider } from './PersonForm';
 
 function App() {
   return (
