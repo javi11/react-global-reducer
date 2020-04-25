@@ -35,40 +35,6 @@ export default function Counter() {
 }
 ```
 
-### Using Provider
-
-```jsx
-import { CounterProvider } from './hooks';
-
-export default () => (
-  <CounterProvider>
-    <App />
-  </CounterProvider>
-);
-```
-
-### Using global hook
-
-```jsx
-import { useGlobalCounter } from './hooks';
-
-export default function Counter({ name }) {
-  const [state, dispatch] = useGlobalCounter();
-
-  const increment = useCallback(() => dispatch({ type: 'inc' }));
-  const decrement = useCallback(() => dispatch({ type: 'dec' }));
-
-  return (
-    <div>
-      <h2>{name}</h2>
-      {state}
-      <button onClick={increment}>+</button>
-      <button onClick={decrement}>-</button>
-    </div>
-  );
-}
-```
-
 ## Contributing
 
 ### Install
